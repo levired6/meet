@@ -6,7 +6,7 @@ const calendar = google.calendar("v3");
 const SCOPES = ["https://www.googleapis.com/auth/calendar.events.public.readonly"];
 const { CLIENT_SECRET, CLIENT_ID, CALENDAR_ID } = process.env;
 const redirect_uris = [
- "https://Your-meet-vercel-app-name.vercel.app/"
+ "https://meet-gamma-one.vercel.app/"
 ];
 
 
