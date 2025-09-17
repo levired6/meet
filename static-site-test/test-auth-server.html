@@ -51,7 +51,7 @@
      const resultLink = document.getElementById("authURL");
      // Replace this with your own endpoint
      const getAuthURL =
-       "YOUR_LAMBDA_GET_AUTH_URL_ENDPOINT";
+       "https://ca7b4okylj.execute-api.eu-central-1.amazonaws.com/dev/api/get-auth-url";
 
 
      getAuthUrlButton.onclick = function () {
@@ -76,7 +76,7 @@
      const getAccessToken = document.getElementById("getToken");
      const accessTokenElement = document.getElementById("accessToken");
      const getToken =
-       "YOUR_LAMBDA_GET_TOKEN_ENDPOINT";
+       "https://ca7b4okylj.execute-api.eu-central-1.amazonaws.com/dev/api/token";
 
 
      getAccessToken.onclick = function () {
@@ -98,6 +98,24 @@
      };
      // --------------------- END OF STEP 2
 
+      // -- STEP 3
+           const getEvents = document.getElementById("getEvents");
+      const events = document.getElementById("events");
+      const getCalendarEvents = "https://ca7b4okylj.execute-api.eu-central-1.amazonaws.com/dev/api/get-events";
+
+
+      getEvents.onclick = function () {
+        const { access_token } = JSON.parse(accessTokenElement.innerText);
+        const eventRequest = getCalendarEvents + "/" + access_token;
+        fetch(eventRequest)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (json) {
+            events.innerText = JSON.stringify(json, null, 2);
+          });
+      };
+      // -- END OF STEP 3
 
    </script>
  </body>
