@@ -96,14 +96,14 @@ module.exports.getCalendarEvents = async (event) => {
       },
       (error, response) => {
         if (error) {
-          reject(error);
-        } else {
-          resolve(response);
-        }
+        return reject(error);
+        }  
+         return resolve(response);
       }
     );
   })
     .then((results) => {
+      // Respond with OAuth token
       return {
         statusCode: 200,
         headers: {
@@ -114,6 +114,7 @@ module.exports.getCalendarEvents = async (event) => {
       };
     })
     .catch((error) => {
+      //Handle error
       return {
         statusCode: 500,
         body: JSON.stringify(error),
