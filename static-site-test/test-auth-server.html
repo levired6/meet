@@ -51,80 +51,69 @@
    <!--New line of Code for Script starts here-->
    <script type="text/javascript">
      // --------------------- STEP 1
-     const getAuthUrlButton = document.getElementById("getAuthUrlButton");
-     const resultElement = document.getElementById("result");
-     const resultLink = document.getElementById("authURL");
-     // Replace this with your own endpoint
-     const getAuthURL =
-       "https://ca7b4okylj.execute-api.eu-central-1.amazonaws.com/dev/api/get-auth-url";
+    const getAuthUrlButton = document.getElementById("get-auth-url-button");
+    const getAuthUrlResult = document.getElementById("result-paragraph");
+    const authLink = document.getElementById("auth-link");
+    const getTokenButton = document.getElementById("get-token-button");
+    const getEventsButton = document.getElementById("get-events-button");
+    const codeInput = document.getElementById("code-input");
 
+    // Replace this with your actual API endpoint for getAuthUrl
+    const getAuthUrlEndpoint =
+      "https://ca7b4oky1j.execute-api.eu-central-1.amazonaws.com/dev/api/get-auth-url";
 
-     getAuthUrlButton.onclick = function () {
-       fetch(getAuthURL)
-         .then(function (response) {
-           return response.json();
-         })
-         .then(function (json) {
-           const result = JSON.stringify(json);
-           // we get the value of authUrl
-           const { authUrl } = JSON.parse(result);
-           // then add it to the html
-           resultElement.innerText = result;
-           resultLink.href = authUrl;
-         });
-     };
-     // --------------------- END OF STEP 1
+    // Replace this with your actual API endpoint for getAccessToken
+    const getAccessTokenEndpoint =
+      "https://ca7b4oky1j.execute-api.eu-central-1.amazonaws.com/dev/api/token/{code}";
 
-
-     // --------------------- STEP 2
-     const codeValue = document.getElementById("code");
-     const getAccessToken = document.getElementById("getToken");
-     const accessTokenElement = document.getElementById("accessToken");
-     const getToken =
-       "https://ca7b4okylj.execute-api.eu-central-1.amazonaws.com/dev/api/token";
-
-
-     getAccessToken.onclick = function () {
-        const code = codeValue.value;
-        const getTokenRequest = getToken;
-        
-        fetch(getTokenRequest, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ code }),
+    getAuthUrlButton.addEventListener("click", () => {
+      fetch(getAuthUrlEndpoint)
+        .then((response) => response.json())
+        .then((data) => {
+          authLink.href = data.authUrl;
+          authLink.style.display = "block";
+          getAuthUrlResult.textContent = "";
         })
-          .then(function (response) {
-            return response.json();
-          })
-          .then(function (json) {
-            accessTokenElement.innerText = JSON.stringify(json);
-          });
-      };
-     // --------------------- END OF STEP 2
+        .catch(() => {
+          getAuthUrlResult.textContent = "Oops. Something went wrong.";
+        });
+    });
 
-      // -- STEP 3
-      const getEvents = document.getElementById("getEvents");
-      const events = document.getElementById("events");
-      const getCalendarEvents = "https://ca7b4okylj.execute-api.eu-central-1.amazonaws.com/dev/api/get-events";
-
-      getEvents.onclick = function () {
-        const { access_token } = JSON.parse(accessTokenElement.innerText);
-        const eventRequest = getCalendarEvents;
+    getTokenButton.addEventListener("click", () => {
+      const code = codeInput.value;
+      if (code) {
+        // Construct the correct endpoint URL without the '{code}' placeholder
+        const endpoint = getAccessTokenEndpoint.replace("{code}", "");
         
-        fetch(eventRequest, {
+        // This is the critical change: Use a POST request and send the code in the body
+        fetch(endpoint, {
+          method: "POST",
           headers: {
-            'Authorization': 'Bearer ' + access_token,
+            "Content-Type": "application/json",
           },
+          body: JSON.stringify({ code: code }),
         })
-          .then(function (response) {
-            return response.json();
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Access token received:", data.accessToken);
+            console.log("Refresh token received:", data.refreshToken);
+            // We're not doing anything with these tokens on the front end yet,
+            // but in a real app, you would save them here.
+            alert("Tokens received. Check the Lambda logs!");
           })
-          .then(function (json) {
-            events.innerText = JSON.stringify(json, null, 2);
+          .catch((error) => {
+            console.error("Error exchanging code for token:", error);
+            alert("Error: " + error.message);
           });
-      };
+      } else {
+        alert("Please paste the authorization code into the input field.");
+      }
+    });
+
+    // You will implement this later
+    getEventsButton.addEventListener("click", () => {
+      alert("This functionality is not yet implemented.");
+    });
       // -- END OF STEP 3
 
    </script>

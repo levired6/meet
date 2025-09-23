@@ -37,6 +37,9 @@ module.exports.getAccessToken = async (event) => {
   try {
     const { code } = JSON.parse(event.body);
     const { tokens } = await oAuth2Client.getToken(code);
+
+    //---Adding this line for debugging---
+    console.log("Access Token Recieved:", tokens.access_token);
     
     return {
       statusCode: 200,
