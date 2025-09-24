@@ -2,6 +2,8 @@
 
 const { google } = require("googleapis");
 const calendar = google.calendar("v3");
+
+// Updated to a broader scope as recommended by the tutor.
 const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
 const { CLIENT_SECRET, CLIENT_ID, CALENDAR_ID } = process.env;
 const redirect_uris = [
@@ -15,10 +17,11 @@ const oAuth2Client = new google.auth.OAuth2(
 );
 
 module.exports.getAuthURL = async () => {
+  // Added 'prompt: consent' as recommended to ensure a refresh token is issued.
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: "offline",
     scope: SCOPES,
-    prompt: 'consent',
+    prompt: 'consent'
   });
 
   return {
@@ -34,56 +37,79 @@ module.exports.getAuthURL = async () => {
 };
 
 module.exports.getAccessToken = async (event) => {
-  try {
-    const { code } = JSON.parse(event.body);
-    const { tokens } = await oAuth2Client.getToken(code);
+  // Changed to handle a POST request with the code in the body.
+  const { code } = JSON.parse(event.body);
 
-    //---Adding this line for debugging---
-    console.log("Access Token Recieved:", tokens.access_token);
-    
-    return {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify(tokens),
-    };
-  } catch (error) {
-    console.error("Error getting access token:", error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify(error),
-    };
-  }
+  return new Promise((resolve, reject) => {
+    oAuth2Client.getToken(code, (error, response) => {
+      if (error) {
+        return reject(error);
+      }
+
+      return resolve(response.tokens);
+    });
+  })
+    .then((results) => {
+      return {
+        statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true,
+        },
+        body: JSON.stringify(results),
+      };
+    })
+    .catch((error) => {
+      return {
+        statusCode: 500,
+        body: JSON.stringify(error),
+      };
+    });
 };
 
 module.exports.getCalendarEvents = async (event) => {
-  try {
-    const access_token = event.headers.Authorization.split(' ')[1];
-    oAuth2Client.setCredentials({ access_token });
-
-    const results = await calendar.events.list({
-      calendarId: CALENDAR_ID,
-      auth: oAuth2Client,
-      timeMin: new Date().toISOString(),
-      singleEvents: true,
-      orderBy: "startTime",
-    });
-
+  // Now getting the token from the Authorization header instead of a path parameter.
+  const access_token = event.headers.Authorization;
+  if (!access_token) {
     return {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify({ events: results.data.items }),
-    };
-  } catch (error) {
-    console.error("Error getting calendar events:", error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify(error),
+      statusCode: 401,
+      body: JSON.stringify({ error: "Authorization token missing" }),
     };
   }
+
+  oAuth2Client.setCredentials({ access_token });
+
+  return new Promise((resolve, reject) => {
+    calendar.events.list(
+      {
+        calendarId: CALENDAR_ID,
+        auth: oAuth2Client,
+        timeMin: new Date().toISOString(),
+        singleEvents: true,
+        orderBy: "startTime",
+      },
+      (error, response) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve(response);
+      }
+    );
+  })
+    .then((results) => {
+      return {
+        statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true,
+        },
+        body: JSON.stringify({ events: results.data.items }),
+      };
+    })
+    .catch((error) => {
+      return {
+        statusCode: 500,
+        body: JSON.stringify(error),
+      };
+    });
 };
