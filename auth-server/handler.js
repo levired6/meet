@@ -21,7 +21,6 @@ module.exports.getAuthURL = async () => {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: "offline",
     scope: SCOPES,
-    prompt: 'consent'
   });
 
   return {
@@ -38,17 +37,21 @@ module.exports.getAuthURL = async () => {
 
 module.exports.getAccessToken = async (event) => {
   // Changed to handle a POST request with the code in the body.
-  const { code } = JSON.parse(event.body);
+     const code = decodeURIComponent(`${event.pathParameters.code}`);
 
-  return new Promise((resolve, reject) => {
-    oAuth2Client.getToken(code, (error, response) => {
-      if (error) {
-        return reject(error);
-      }
-
-      return resolve(response.tokens);
-    });
-  })
+    return new Promise((resolve, reject) => {
+      /**
+       *  Exchange authorization code for access token with a “callback” after the exchange,
+       *  The callback in this case is an arrow function with the results as parameters: “error” and “response”
+       */
+       
+      oAuth2Client.getToken(code, (error, response) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve(response);
+      });
+    })
     .then((results) => {
       return {
         statusCode: 200,
@@ -68,34 +71,28 @@ module.exports.getAccessToken = async (event) => {
 };
 
 module.exports.getCalendarEvents = async (event) => {
-  // Now getting the token from the Authorization header instead of a path parameter.
-  const access_token = event.headers.Authorization;
-  if (!access_token) {
-    return {
-      statusCode: 401,
-      body: JSON.stringify({ error: "Authorization token missing" }),
-    };
-  }
-
-  oAuth2Client.setCredentials({ access_token });
-
-  return new Promise((resolve, reject) => {
-    calendar.events.list(
-      {
-        calendarId: CALENDAR_ID,
-        auth: oAuth2Client,
-        timeMin: new Date().toISOString(),
-        singleEvents: true,
-        orderBy: "startTime",
-      },
-      (error, response) => {
-        if (error) {
-          return reject(error);
+    // Decode authorization code extracted from the URL query
+    const access_token = decodeURIComponent(`${event.pathParameters.access_token}`);
+   
+    oAuth2Client.setCredentials({ access_token });
+   
+    return new Promise((resolve, reject) => {
+      calendar.events.list(
+        {
+          calendarId: CALENDAR_ID,
+          auth: oAuth2Client,
+          timeMin: new Date().toISOString(),
+          singleEvents: true,
+          orderBy: "startTime",
+        },
+        (error, response) => {
+          if (error) {
+            return reject(error);
+          }
+          return resolve(response);
         }
-        return resolve(response);
-      }
-    );
-  })
+      );
+    })
     .then((results) => {
       return {
         statusCode: 200,
