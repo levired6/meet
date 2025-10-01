@@ -19,4 +19,10 @@ describe('<App /> component', () => {
   test('render CitySearch', () => {
     expect(AppDOM.querySelector('#city-search')).toBeInTheDocument();
   });
+
+    test('renders NumberOfEvents component', () => {
+    // Check for the component using its unique ID
+    expect(AppDOM.querySelector('#number-of-events')).toBeInTheDocument();
+  });
+  
 });

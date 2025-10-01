@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test":"jest"
+    "test": "jest --watchAll=false",
+    "test:coverage": "jest --coverage --watchAll=false" 
   },
   "dependencies": {
     "googleapis": "^159.0.0",
