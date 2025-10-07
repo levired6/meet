@@ -1,3 +1,4 @@
+
 // src/App.jsx
 import React from 'react';
 import CitySearch from './components/CitySearch';
