@@ -1,15 +1,26 @@
 // src/components/NumberOfEvents.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-const NumberOfEvents = () => {
+const NumberOfEvents = ({ currentNOE, setCurrentNOE }) => {
     // State to manage the number of events, initialized to 32
-    const [number, setNumber] = useState(32);
+    const [number, setNumber] = useState(currentNOE);
 
     const handleInputChanged = (event) => {
-        const value = event.target.value;
+        const value = Number(event.target.value);
         // Update the state with the new value typed by the user
         setNumber(value);
-    };
+        setCurrentNOE(value);
+
+            let errorText;
+    if (isNaN(currentNOE)) {
+      errorText = "Please enter a valid number to see the events"
+    } else if (currentNOE < 1) {
+      errorText = "Please enter a number greater than zero to see the events"
+    } else {
+      errorText =""
+    }
+    setErrorAlert(errorText);
+  };
 
     return (
         <div id="number-of-events">
