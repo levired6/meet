@@ -1,39 +1,36 @@
 // src/components/NumberOfEvents.jsx
-import { useState } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-const NumberOfEvents = ({ currentNOE, setCurrentNOE }) => {
-    // State to manage the number of events, initialized to 32
-    const [number, setNumber] = useState(currentNOE);
-
+const NumberOfEvents = ({ currentNOE, setCurrentNOE, setErrorAlert }) => {
     const handleInputChanged = (event) => {
         const value = Number(event.target.value);
-        // Update the state with the new value typed by the user
-        setNumber(value);
-        setCurrentNOE(value);
 
-            let errorText;
-    if (isNaN(currentNOE)) {
-      errorText = "Please enter a valid number to see the events"
-    } else if (currentNOE < 1) {
-      errorText = "Please enter a number greater than zero to see the events"
-    } else {
-      errorText =""
-    }
-    setErrorAlert(errorText);
-  };
+  setCurrentNOE(value); // Always update so the input reflects what the user typed
+
+  if (isNaN(value) || value <= 0 || value > 50) {
+    setErrorAlert("You must enter a valid number of events");
+  } else {
+    setErrorAlert("");
+  }
+};
 
     return (
         <div id="number-of-events">
-            <label htmlFor="number-of-events-input">Number of Events:</label>
             <input
-                type="text"
-                id="number-of-events-input"
-                className="number-of-events-input"
-                value={number}
-                onChange={handleInputChanged} // Add the change handler
+                type="number"
+                role="textbox"
+                value={currentNOE}
+                onChange={handleInputChanged}
             />
         </div>
     );
+};
+
+NumberOfEvents.propTypes = {
+  currentNOE: PropTypes.number.isRequired,
+  setCurrentNOE: PropTypes.func.isRequired,
+  setErrorAlert: PropTypes.func.isRequired,
 };
 
 export default NumberOfEvents;

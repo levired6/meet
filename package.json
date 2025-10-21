@@ -9,12 +9,13 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "jest --watchAll=false",
-    "test:coverage": "jest --coverage --watchAll=false" 
+    "test:coverage": "jest --coverage --watchAll=false"
   },
   "dependencies": {
     "googleapis": "^159.0.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "recharts": "^3.3.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.3",

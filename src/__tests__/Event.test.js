@@ -1,4 +1,5 @@
 // src/__tests__/Event.test.js
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Event from '../components/Event';
@@ -7,7 +8,11 @@ import { getEvents } from '../api';
 describe('<Event /> component', () => {
     let EventComponent;
     let allEvents;
-
+     beforeAll(async () => {
+        // Assuming getEvents() returns the mock data array required for testing
+        allEvents = await getEvents(); 
+    });
+    
     beforeEach(() => {
         // Render the Event component for the first event in the list
         EventComponent = render(<Event event={allEvents[0]} />);
@@ -25,21 +30,16 @@ describe('<Event /> component', () => {
     });
 
     test('renders event details button with the title (show details)', () => {
-        // Figure 22 shows a test for a 'show details' button
         expect(EventComponent.queryByText('show details')).toBeInTheDocument();
     });
 
      test('by default, event details section should be hidden', () => {
-        // Check for the element containing the event's description
         expect(EventComponent.queryByText(allEvents[0].description)).not.toBeInTheDocument();
     });
 
     test('shows the details section when the user clicks on the "show details" button', async () => {
         const user = userEvent.setup();
-        // Get the button by its current text
         const showDetailsButton = screen.getByText('show details');
-        
-        // Simulate click on the 'show details' button
         await user.click(showDetailsButton);
 
         // Check if the details (description) are now visible
