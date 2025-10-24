@@ -32,7 +32,7 @@ describe('<EventList /> component', () => {
    const EventListDOM = AppDOM.querySelector('#event-list');
    await waitFor(() => {
      const EventListItems = within(EventListDOM).queryAllByRole('listitem');
-     expect(EventListItems.length).toBe(32);
+     expect(EventListItems.length).toBe(36);
     });
   });
 });

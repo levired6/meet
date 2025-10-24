@@ -12,7 +12,7 @@ import { InfoAlert, ErrorAlert, WarningAlert } from './components/Alert';
 
 const App = () => {
    const [events, setEvents] = useState([]);
-   const [currentNOE, setCurrentNOE] = useState(32);
+   const [currentNOE, setCurrentNOE] = useState(36);
    const [allLocations, setAllLocations] = useState([]);
    const [currentCity, setCurrentCity] = useState("See all cities");
    const [infoAlert, setInfoAlert] = useState("");
