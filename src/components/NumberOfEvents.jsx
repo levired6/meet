@@ -17,7 +17,9 @@ const NumberOfEvents = ({ currentNOE, setCurrentNOE, setErrorAlert }) => {
 
     return (
         <div id="number-of-events">
+            <label htmlFor="number-of-events-input">Number of Events:</label>
             <input
+                id="number-of-events-input" // Linked to label for accessibility
                 type="number"
                 role="textbox"
                 value={currentNOE}
