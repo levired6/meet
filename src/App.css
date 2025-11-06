@@ -1,11 +1,13 @@
 @import url(https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@200..700&display=swap);
 
+/* Global App Colors/Backgrounds */
 body {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 2% 5%;
-    background: rgb(39, 39, 39)
+    background: rgb(39, 39, 39); /* Permanent dark background */
+    color: #ffffff; /* --- ADDED: Ensures default page text is white --- */
 }
 
 .app-name {
@@ -44,8 +46,11 @@ input[type="number"] {
     height: 38px;
     margin-bottom: 20px;
     width: 60vw;
+    /* Ensure input text is readable on light backgrounds */
+    color: #242424; /* Dark text inside input fields */
 }
 
+/* Search and Suggestions */
 #city-search,
 #number-of-events {
     display: flex;
@@ -53,7 +58,6 @@ input[type="number"] {
     margin: auto;
     position: relative;
 }
-
 
 .suggestions {
     width: 60vw;
@@ -64,6 +68,7 @@ input[type="number"] {
     margin: 0;
     font-size: 1rem;
     box-shadow: 10px 10px 16px -12px rgba(0, 0, 0, 0.75);
+    color: #ffffff; /* --- ADDED: White text for suggestions --- */
 }
 
 .suggestions>li {
@@ -82,6 +87,7 @@ input[type="number"] {
     background-color: #303636;
 }
 
+/* Event Card Styles (High Contrast) */
 .event {
     padding: 10px 10px 35px;
     margin-bottom: 10px;
@@ -90,7 +96,31 @@ input[type="number"] {
     border-radius: 10px;
     position: relative;
     font-size: 1.15rem;
-    background: black
+    background: black; /* Solid black background for card */
+    color: white; /* --- ADDED: Explicitly set text to white on the card --- */
+}
+
+/* Explicit Button Styles for High Contrast */
+button {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a; /* Black button background */
+    color: white; /* --- ADDED: White text on buttons, overriding global dark text --- */
+    cursor: pointer;
+    transition: border-color 0.25s;
+}
+
+button:hover {
+    border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
 }
 
 .alerts-container {
@@ -119,4 +149,4 @@ input[type="number"] {
         grid-template-columns: 1fr;
         width: 100%;
     }
-}
+} 
