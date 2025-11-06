@@ -59,6 +59,15 @@ input[type="number"] {
     position: relative;
 }
 
+/* --- FIX: Added specific styles to center the 'Number of Events' label and input group --- */
+#number-of-events {
+    /* Override flex-direction: column from above for this specific section */
+    flex-direction: column;
+    /* Center all children (label and input) horizontally within the component */
+    align-items: center;
+    width: 100%; /* Ensure it takes full width for centering */
+}
+
 .suggestions {
     width: 60vw;
     position: absolute;
