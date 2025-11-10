@@ -1,5 +1,6 @@
 // src/api.js
 import mockData from './mock-data';
+import NProgress from 'nprogress';
 
 // Helper function to check the validity of an access token
 export const checkToken = async (accessToken) => {
@@ -74,40 +75,56 @@ export const getAccessToken = async () => {
  return accessToken;
 };
 
-
 /**
- * This function will fetch the list of all events
- */
+ * This function will fetch the list of all events, with offline support
+ */
 export const getEvents = async () => {
+    // Start progress bar when any data loading begins
+    NProgress.start();
+
+    // 1. OFFLINE CHECK: If the user is offline, load event data from cache immediately.
+    // This comes BEFORE the token check as instructed.
+    if (!navigator.onLine) {
+        const events = localStorage.getItem("lastEvents");
+        NProgress.done();
+        // Return cached events (parsed from string) or an empty array if nothing is cached
+        return events ? JSON.parse(events) : [];
+    }
+
+    // Localhost/Mock Data Check (runs if online)
    if (window.location.href.startsWith('http://localhost')) {
-   return mockData;
- }
+        NProgress.done();
+       return mockData;
+     }
 
  
- const token = await getAccessToken();
+     const token = await getAccessToken();
 
- if (token) {
-   removeQuery();
-   const url =  "https://ca7b4okylj.execute-api.eu-central-1.amazonaws.com/dev/api/get-events" + "/" + token;
-   const response = await fetch(url);
-   const result = await response.json();
-   if (result) {
-     // Storing the event data to cache for offline use
-     localStorage.setItem('lastEvents', JSON.stringify(result.events));
-     return result.events;
-   } else {
-     // Check if cached data is available on failed fetch
-     const cachedData = localStorage.getItem('lastEvents');
-     if (cachedData) {
-       return JSON.parse(cachedData);
-     }
-     return null;
-   }
- }
- // Return cached data if token acquisition fails completely
- const cachedData = localStorage.getItem('lastEvents');
- if (cachedData) {
-   return JSON.parse(cachedData);
- }
- return [];
+     if (token) {
+       removeQuery();
+       const url =  "https://ca7b4okylj.execute-api.eu-central-1.amazonaws.com/dev/api/get-events" + "/" + token;
+       const response = await fetch(url);
+       const result = await response.json();
+       if (result && result.events) {
+            NProgress.done();
+         // 2. ONLINE SAVE: Storing the new event data to cache for offline use
+         localStorage.setItem('lastEvents', JSON.stringify(result.events));
+         return result.events;
+       } else {
+            NProgress.done();
+         // Fallback: If fetch fails while online, return cache if available
+         const cachedData = localStorage.getItem('lastEvents');
+         if (cachedData) {
+           return JSON.parse(cachedData);
+         }
+         return [];
+       }
+     }
+     // Fallback: If token acquisition fails completely while online, return cache if available
+     NProgress.done();
+    const cachedData = localStorage.getItem('lastEvents');
+    if (cachedData) {
+      return JSON.parse(cachedData);
+    }
+    return [];
 };
