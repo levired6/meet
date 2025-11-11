@@ -77,7 +77,7 @@ const EventGenresChart = ({ events }) => {
                     cx="50%"
                     cy="50%"
                     outerRadius={outerRadius}
-                    fill="#dd92fb"
+                    fill="#8884d8"
                     labelLine={false}
                     label={renderCustomizedLabel}
                 >
