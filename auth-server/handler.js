@@ -3,7 +3,7 @@
 const { google } = require("googleapis");
 const calendar = google.calendar("v3");
 
-// Updated to a broader scope as recommended by the tutor.
+
 const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
 const { CLIENT_SECRET, CLIENT_ID, CALENDAR_ID } = process.env;
 const redirect_uris = [
@@ -17,7 +17,7 @@ const oAuth2Client = new google.auth.OAuth2(
 );
 
 module.exports.getAuthURL = async () => {
-  // Added 'prompt: consent' as recommended to ensure a refresh token is issued.
+ 
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: "offline",
     scope: SCOPES,
@@ -36,14 +36,11 @@ module.exports.getAuthURL = async () => {
 };
 
 module.exports.getAccessToken = async (event) => {
-  // Changed to handle a POST request with the code in the body.
+
      const code = decodeURIComponent(`${event.pathParameters.code}`);
 
     return new Promise((resolve, reject) => {
-      /**
-       *  Exchange authorization code for access token with a “callback” after the exchange,
-       *  The callback in this case is an arrow function with the results as parameters: “error” and “response”
-       */
+
        
       oAuth2Client.getToken(code, (error, response) => {
         if (error) {
@@ -71,7 +68,7 @@ module.exports.getAccessToken = async (event) => {
 };
 
 module.exports.getCalendarEvents = async (event) => {
-    // Decode authorization code extracted from the URL query
+ 
     const access_token = decodeURIComponent(`${event.pathParameters.access_token}`);
    
     oAuth2Client.setCredentials({ access_token });

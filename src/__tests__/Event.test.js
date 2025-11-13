@@ -9,23 +9,22 @@ describe('<Event /> component', () => {
     let EventComponent;
     let allEvents;
      beforeAll(async () => {
-        // Assuming getEvents() returns the mock data array required for testing
+     
         allEvents = await getEvents(); 
     });
     
     beforeEach(() => {
-        // Render the Event component for the first event in the list
+       
         EventComponent = render(<Event event={allEvents[0]} />);
     });
 
     test('renders event title', () => {
-        // Check for the event's summary/title
-        // The first event's summary is 'Learn JavaScript'
+      
         expect(EventComponent.queryByText(allEvents[0].summary)).toBeInTheDocument();
     });
 
     test('renders event location', () => {
-        // Check for the event's location, which is 'London, UK' for the first event
+     
         expect(EventComponent.queryByText(allEvents[0].location)).toBeInTheDocument();
     });
 
@@ -42,10 +41,10 @@ describe('<Event /> component', () => {
         const showDetailsButton = screen.getByText('show details');
         await user.click(showDetailsButton);
 
-        // Check if the details (description) are now visible
+    
         expect(screen.getByText('Javascript offers interactivity', { exact: false })).toBeInTheDocument();
         
-        // Check if the button text has changed to 'hide details'
+     
         expect(screen.getByText('hide details')).toBeInTheDocument();
         expect(screen.queryByText('show details')).not.toBeInTheDocument();
     });

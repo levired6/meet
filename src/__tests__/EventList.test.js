@@ -24,7 +24,7 @@ describe('<EventList /> component', () => {
 });  
 
 
-  //Seperate integration scope test file
+
   describe('<EventList /> integration', () => {
  test('renders a list of 32 events when the app is mounted and rendered', async () => {
    const AppComponent = render(<App />);

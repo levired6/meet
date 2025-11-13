@@ -41,24 +41,24 @@ class Alert extends Component {
 class InfoAlert extends Alert {
  constructor(props) {
    super(props);
-   this.color = 'rgba(170, 37, 206, 1)'; // blue
-   this.bgColor = 'rgb(220, 220, 255)'; // light blue
+   this.color = 'rgba(170, 37, 206, 1)';
+   this.bgColor = 'rgb(220, 220, 255)'; 
  }
 }
 
 class ErrorAlert extends Alert {
  constructor(props) {
    super(props);
-   this.color = 'rgba(222, 20, 20, 1)'; // red
-   this.bgColor = 'rgba(255, 220, 220, 1)'; // light red
+   this.color = 'rgba(222, 20, 20, 1)';
+   this.bgColor = 'rgba(255, 220, 220, 1)'; 
  }
 }
 
 class WarningAlert extends Alert {
  constructor(props) {
    super(props);
-   this.color = 'rgba(240, 113, 39, 1)'; // orange
-   this.bgColor = 'rgba(255, 233, 220, 1)'; // light orange
+   this.color = 'rgba(240, 113, 39, 1)'; 
+   this.bgColor = 'rgba(255, 233, 220, 1)'; 
  }
 }
 

@@ -6,8 +6,8 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 2% 5%;
-    background: rgb(39, 39, 39); /* Permanent dark background */
-    color: #ffffff; /* --- ADDED: Ensures default page text is white --- */
+    background: rgb(39, 39, 39); 
+    color: #ffffff; 
 }
 
 .app-name {
@@ -46,11 +46,9 @@ input[type="number"] {
     height: 38px;
     margin-bottom: 20px;
     width: 60vw;
-    /* Ensure input text is readable on light backgrounds */
-    color: #242424; /* Dark text inside input fields */
+    color: #242424;
 }
 
-/* Search and Suggestions */
 #city-search,
 #number-of-events {
     display: flex;
@@ -59,13 +57,10 @@ input[type="number"] {
     position: relative;
 }
 
-/* --- FIX: Added specific styles to center the 'Number of Events' label and input group --- */
 #number-of-events {
-    /* Override flex-direction: column from above for this specific section */
     flex-direction: column;
-    /* Center all children (label and input) horizontally within the component */
     align-items: center;
-    width: 100%; /* Ensure it takes full width for centering */
+    width: 100%; 
 }
 
 .suggestions {
@@ -77,7 +72,7 @@ input[type="number"] {
     margin: 0;
     font-size: 1rem;
     box-shadow: 10px 10px 16px -12px rgba(0, 0, 0, 0.75);
-    color: #ffffff; /* --- ADDED: White text for suggestions --- */
+    color: #ffffff; 
 }
 
 .suggestions>li {
@@ -96,7 +91,6 @@ input[type="number"] {
     background-color: #303636;
 }
 
-/* Event Card Styles (High Contrast) */
 .event {
     padding: 10px 10px 35px;
     margin-bottom: 10px;
@@ -105,11 +99,10 @@ input[type="number"] {
     border-radius: 10px;
     position: relative;
     font-size: 1.15rem;
-    background: black; /* Solid black background for card */
-    color: white; /* --- ADDED: Explicitly set text to white on the card --- */
+    background: black; 
+    color: white; 
 }
 
-/* Explicit Button Styles for High Contrast */
 button {
     border-radius: 8px;
     border: 1px solid transparent;
@@ -117,8 +110,8 @@ button {
     font-size: 1em;
     font-weight: 500;
     font-family: inherit;
-    background-color: #1a1a1a; /* Black button background */
-    color: white; /* --- ADDED: White text on buttons, overriding global dark text --- */
+    background-color: #1a1a1a; 
+    color: white; 
     cursor: pointer;
     transition: border-color 0.25s;
 }

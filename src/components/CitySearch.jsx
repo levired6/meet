@@ -10,7 +10,7 @@ const CitySearch = ({ allLocations, setCurrentCity, setInfoAlert }) => {
         setSuggestions(allLocations);
     }, [`${allLocations}`]);
 
-  // Handle changes to the city input field
+ 
   const handleInputChange = (event) => {
     const value = event.target.value;
     const filteredSuggestions = allLocations ? allLocations.filter((location) => {
@@ -29,15 +29,12 @@ const CitySearch = ({ allLocations, setCurrentCity, setInfoAlert }) => {
     setInfoAlert(infoText);
 };
 
-  // Handle selection of a city from the suggestion list
   const handleItemClicked = (event) => {
     const value = event.target.textContent;
     setQuery(value);
     setShowSuggestions(false);
     setCurrentCity(value);
-    setInfoAlert(""); // Clear info alert on successful selection
-    // Also ensuring that the input box is unfocused after selection
-    // (This is often not necessary in tests but good for UX)
+    setInfoAlert(""); 
   };
 
 return (

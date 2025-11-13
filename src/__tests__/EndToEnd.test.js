@@ -6,8 +6,8 @@ describe('show/hide event details', () => {
   beforeAll(async () => {
     browser = await puppeteer.launch({
       headless: false,
-      slowMo: 250, // slow down by 250ms,
-      timeout: 0 // removes any puppeteer/browser timeout limitations (this isn't the same as the timeout of jest)
+      slowMo: 250, 
+      timeout: 0 
     });
     page = await browser.newPage();
     await page.goto('http://localhost:5173/');

@@ -26,8 +26,8 @@ useEffect(() => {
             setWarningAlert('You are curently offline. The displayed events list has been loaded from your cache');
         }
 		fetchData();
-		// re-fetch/filter when city OR number-of-events changes
-	}, [currentCity, currentNOE]); // <-- added currentNOE
+		
+	}, [currentCity, currentNOE]); 
 
     const fetchData = async () => {
         try {
@@ -46,7 +46,7 @@ useEffect(() => {
                     ? allEvents
                     : allEvents.filter(event => event.location === currentCity);
 
-            // Defensive slice
+            
             setEvents((filteredEvents || []).slice(0, currentNOE));
             setAllLocations(extractLocations(allEvents));
         } catch (err) {

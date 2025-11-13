@@ -25,7 +25,7 @@ const getToken = async (code) => {
   return access_token;
 };
 
-// Helper function to remove the code from the URL after using it
+// Helper function to remove the query parameters from the URL
 const removeQuery = () => {
   let newurl;
   if (window.history.pushState && window.location.pathname) {
@@ -54,7 +54,7 @@ export const extractLocations = (events) => {
 
 // Function to get the access token from local storage or prompt for authorization
 export const getAccessToken = async () => {
-  const accessToken = localStorage.getItem("access_token"); // checkToken must be defined globally to be used here
+  const accessToken = localStorage.getItem("access_token");
   const tokenCheck = accessToken && (await checkToken(accessToken));
 
   if (!accessToken || tokenCheck.error) {
@@ -69,7 +69,7 @@ export const getAccessToken = async () => {
       const { authUrl } = result;
       return (window.location.href = authUrl);
     }
-    return code && getToken(code); // getToken must be defined globally to be used here
+    return code && getToken(code); 
   }
   return accessToken;
 };
@@ -78,19 +78,18 @@ export const getAccessToken = async () => {
  * This function will fetch the list of all events, with offline support
  */
 export const getEvents = async () => {
-  // Start progress bar when any data loading begins
+
   NProgress.start();
 
-  // 1. OFFLINE CHECK: If the user is offline, load event data from cache immediately.
-  // This comes BEFORE the token check as instructed.
+
   if (!navigator.onLine) {
     const events = localStorage.getItem("lastEvents");
     NProgress.done();
-    // Return cached events (parsed from string) or an empty array if nothing is cached
+
     return events ? JSON.parse(events) : [];
   }
 
-  // Localhost/Mock Data Check (runs if online)
+ 
   if (window.location.href.startsWith("http://localhost")) {
     NProgress.done();
     return mockData;
@@ -107,18 +106,18 @@ export const getEvents = async () => {
     const response = await fetch(url);
     const result = await response.json();
     if (result && result.events) {
-      NProgress.done(); // 2. ONLINE SAVE: Storing the new event data to cache for offline use
+      NProgress.done();
       localStorage.setItem("lastEvents", JSON.stringify(result.events));
       return result.events;
     } else {
-      NProgress.done(); // Fallback: If fetch fails while online, return cache if available
+      NProgress.done();
       const cachedData = localStorage.getItem("lastEvents");
       if (cachedData) {
         return JSON.parse(cachedData);
       }
       return [];
     }
-  } // Fallback: If token acquisition fails completely while online, return cache if available
+  } 
   NProgress.done();
   const cachedData = localStorage.getItem("lastEvents");
   if (cachedData) {

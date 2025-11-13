@@ -20,7 +20,7 @@ describe("<App /> component", () => {
   });
 
   test("renders NumberOfEvents component", () => {
-    // Check for the component using its unique ID
+    
     expect(AppDOM.querySelector("#number-of-events")).toBeInTheDocument();
   });
 

@@ -7,20 +7,19 @@ import {
 const CityEventsChart = ({ allLocations, events }) => {
     const [data, setData] = useState([]);
 
-    // Populate chart data when events change
+   
     useEffect(() => {
         setData(getData());
 
-        // force Recharts to recalc layout after data updates
         setTimeout(() => {
             window.dispatchEvent(new Event("resize"));
         }, 0);
-    }, [events]); // no need for `${events}`, just track events directly
+    }, [events]); 
 
     const getData = () => {
         return allLocations.map((location) => {
             const count = events.filter((event) => event.location === location).length;
-            const city = location.split(/, | - /)[0]; // Handles "Berlin, Germany" or "Dubai - UAE"
+            const city = location.split(/, | - /)[0]; 
             return { city, count };
         });
     };

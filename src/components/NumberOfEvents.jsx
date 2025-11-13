@@ -6,7 +6,7 @@ const NumberOfEvents = ({ currentNOE, setCurrentNOE, setErrorAlert }) => {
     const handleInputChanged = (event) => {
         const value = Number(event.target.value);
 
-  setCurrentNOE(value); // Always update so the input reflects what the user typed
+  setCurrentNOE(value); 
 
   if (isNaN(value) || value <= 0 || value > 50) {
     setErrorAlert("You must enter a valid number of events");
@@ -19,7 +19,7 @@ const NumberOfEvents = ({ currentNOE, setCurrentNOE, setErrorAlert }) => {
         <div id="number-of-events">
             <label htmlFor="number-of-events-input">Number of Events:</label>
             <input
-                id="number-of-events-input" // Linked to label for accessibility
+                id="number-of-events-input"
                 type="number"
                 role="textbox"
                 value={currentNOE}
