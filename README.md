@@ -1,136 +1,101 @@
-# Meet App - Serverless PWA with React
+# Meet — Serverless PWA (React)
 
-## Overview
+Meet is a serverless Progressive Web App (PWA) built with React that displays Google Calendar events, with offline support and charts. The app is configured to use mock data in local development so anyone can run and explore it quickly.
 
-This project is a serverless, progressive web application (PWA) built with React, utilizing a Test-Driven Development (TDD) approach. The application integrates with the Google Calendar API to fetch and display upcoming events, allowing users to search for events in specific cities. It is designed to be highly scalable, performant, and to provide an excellent user experience, including offline capabilities and data visualization.
+## Quick overview
 
-## Objective
-
-To build a serverless, progressive web application (PWA) with React using a test-driven development (TDD) technique. The application uses the Google Calendar API to fetch upcoming events and visualizes event data through charts.
-
-## Context
-
-The "Meet App" combines serverless architecture with Progressive Web App (PWA) features to deliver a modern, efficient, and user-friendly experience. This project demonstrates key web development skills including serverless functions (AWS Lambda), OAuth2 authentication, React development with TDD, and data visualization. The PWA aspects ensure instant loading, offline support, and installability on various devices.
-
-## Key Features
-
-The Meet App provides the following core functionalities:
-
-* **Filter Events by City:** Users can search for and filter events by their city.
-* **Show/Hide Event Details:** Events are displayed concisely, with the option to expand for more information.
-* **Specify Number of Events:** Users can control how many events are displayed on the page.
-* **Use the App When Offline:** The application is designed to function even without an internet connection, displaying cached data.
-* **Add an App Shortcut to the Home Screen:** Users can install the app directly to their device's home screen for quick access.
-* **Display Charts Visualizing Event Details:** Data visualization helps users understand event distribution and genre popularity.
-
-## User Stories (Features 2-6)
-
-Here are the user stories for the specified features, outlining the user's role, desired action, and benefit:
-
-### Feature 2: Show/Hide Event Details
-* **As a user,** I should be able to expand an event, **so that** I can see its full details.
-* **As a user,** I should be able to collapse an event, **so that** I can hide its details and see more events.
-
-### Feature 3: Specify Number of Events
-* **As a user,** I should be able to specify the number of events displayed, **so that** I can control how many events I see on the page.
-
-### Feature 4: Use the App When Offline
-* **As a user,** I should be able to use the app when offline, **so that** I can view previously loaded event data without an internet connection.
-* **As a user,** I should be able to receive an error message when changing search settings offline, **so that** I understand why new data cannot be fetched.
-
-### Feature 5: Add an App Shortcut to the Home Screen
-* **As a user,** I should be able to add an app shortcut to my home screen, **so that** I can quickly access the Meet app like a native application.
-
-### Feature 6: Display Charts Visualizing Event Details
-* **As a user,** I should be able to view charts visualizing event details, **so that** I can easily understand event distribution and popularity.
+- Frontend: Vite + React (entry: `index.html` → `src/main.jsx` → `src/App.jsx`).
+- Mock data: `src/mock-data.js` (used automatically on `localhost`).
+- API helpers and auth flow: `src/api.js`.
+- Auth backend handlers (serverless): `auth-server/handler.js` (deployable to AWS Lambda/Vercel).
+- PWA: configured using `vite-plugin-pwa` in `vite.config.js`. Service worker registration is enabled for production builds only.
 
 ---
 
-## Scenarios (Gherkin Syntax for All 6 Features)
+## Quick start (run locally — no Google setup required)
 
-Below are the detailed scenarios for each feature, written in Gherkin's Given-When-Then format, which will serve as the basis for test-driven development.
+Requirements
+- Node.js 18+ (recommended)
+- npm
 
-### Feature 1: Filter Events By City
+Steps
+1. Clone the repo
 
-**Scenario 1: When user hasn't searched for a city, show upcoming events from all cities.**
-```gherkin
-Given the user is on the main events page
-And the search field is empty
-When the app loads
-Then all upcoming events from all cities should be displayed
+   git clone https://github.com/levired6/meet.git
+   cd meet
 
-Scenario 2: User should see a list of suggestions when they search for a city.
+2. Install dependencies
 
-Given the user is on the main events page
-When the user types "Berlin" into the city search field
-Then a list of city suggestions, including "Berlin, Germany", should appear
+   npm ci
 
-Scenario 3: User can select a city from the suggested list.
+3. Start the dev server (Vite)
 
-Given the user has typed a city name and a list of suggestions is displayed
-When the user selects "Berlin, Germany" from the suggestions
-Then only events for "Berlin, Germany" should be displayed
+   npm run dev
 
-Feature 2: Show/Hide Event Details
-Scenario 1: An event element is collapsed by default.
+4. Open the app
 
-Given the user is on the main events page
-When the events are displayed
-Then each event element should be collapsed, showing only basic information
+   http://localhost:5173
 
-Scenario 2: User can expand an event to see details.
+Notes
+- When running on `http://localhost` the app uses the included mock data so you won't need Google OAuth to see the UI and features.
+- The service worker and PWA features are enabled in production builds only. To preview production (and test SW/PWA behavior):
 
-Given an event element is collapsed
-When the user clicks the "show details" button for an event
-Then the event element should expand to reveal full details
+  npm run build
+  npm run preview
 
-Scenario 3: User can collapse an event to hide details.
+---
 
-Given an event element is expanded
-When the user clicks the "hide details" button for that event
-Then the event element should collapse to hide full details
+## Scripts
+- `npm run dev` — start the dev server (Vite)
+- `npm run build` — create a production build
+- `npm run preview` — serve the production build locally (useful to test PWA/service worker)
+- `npm test` — run tests (Jest)
+- `npm run test:coverage` — run tests with coverage
+- `npm run lint` — run ESLint
 
-Feature 3: Specify Number of Events
-Scenario 1: When user hasn't specified a number, 32 events are shown by default.
+---
 
-Given the user is on the main events page
-And the number of events input is empty
-When the app loads or refreshes
-Then 32 events should be displayed by default
+## Enabling Google Calendar (optional)
 
-Scenario 2: User can change the number of events displayed.
+The frontend currently expects an auth backend for exchanging codes and retrieving events. The repository includes `auth-server/handler.js` (example serverless handlers) but you must deploy or run an auth server and provide Google credentials.
 
-Given 32 events are currently displayed
-When the user changes the number of events input to "10"
-Then 10 events should be displayed
+High level steps:
+1. Create a Google OAuth Client ID (Web application) in Google Cloud Console and add your redirect URI(s).
+2. Deploy the auth server (e.g., AWS Lambda, Vercel) or run an equivalent server that implements the endpoints used in `src/api.js`:
+   - `/api/get-auth-url` — returns an `authUrl` to redirect the user
+   - `/api/token/:code` — exchanges a code for an access token
+   - `/api/get-events/:access_token` — returns calendar events
+3. Set environment variables on the auth server: `CLIENT_ID`, `CLIENT_SECRET`, `CALENDAR_ID`.
+4. Update endpoint URLs in `src/api.js` if you deploy the backend to a URL different from the one in the file.
+5. Ensure Google redirect URIs match the deployed app URL and the auth backend configuration.
 
-Feature 4: Use the App When Offline
-Scenario 1: Show cached data when there's no internet connection.
+If you do not configure an auth backend, the app will fall back to cached events (if available) or the mock data on localhost.
 
-Given the user has previously viewed events while online
-And there is currently no internet connection
-When the user opens the app
-Then previously cached event data should be displayed
+---
 
-Scenario 2: Show error when user changes search settings (city, number of events).
+## Troubleshooting
 
-Given the user is offline
-When the user attempts to change the city or number of events
-Then an error message indicating no internet connection should be displayed
-And no new data should be fetched
+- Blank page / no events: confirm `npm run dev` is running and you opened the port printed by Vite (default: `http://localhost:5173`).
+- OAuth / 401 / CORS errors: those come from the auth backend or Google — check the backend CORS headers, credentials, and redirect URIs.
+- Service worker not registering in dev: that's expected — SW registration only runs when `NODE_ENV === 'production'`. Use `npm run build` + `npm run preview` to test SW.
+- Tests failing: ensure dev dependencies are installed (`npm ci`) and run `npm test` locally. Puppeteer-based tests may require extra CI configuration.
 
-Feature 5: Add an App Shortcut to the Home Screen
-Scenario 1: User can install the meet app as a shortcut on their device home screen.
+---
 
-Given the user is browsing the Meet app on a compatible device
-When the "Add to Home Screen" prompt appears or the user uses the browser's install option
-Then the Meet app icon should be added to the device's home screen
-And the app should launch as a standalone application when opened from the shortcut
+## Where to look in the code
+- App entry: `src/main.jsx`
+- App component: `src/App.jsx`
+- API helpers and auth flow: `src/api.js`
+- Mock data: `src/mock-data.js`
+- Service worker registration: `src/serviceWorkerRegistration.js`
+- PWA config: `vite.config.js`
+- Auth server example (lambda handlers): `auth-server/handler.js`
 
-Feature 6: Display Charts Visualizing Event Details
-Scenario 1: Show a chart with the number of upcoming events in each city.
+---
 
-Given the user is on the main events page
-And event data for multiple cities is available
-When the user views the main page
-Then a chart visualizing the number of events per city shou
+## Contact / Contributing
+If you'd like to contribute or have questions, open an issue or a PR. For quick problems, include the command you ran and the exact error output so the issue is reproducible.
+
+---
+
+Made with ❤️ — Levired
